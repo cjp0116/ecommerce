@@ -1,28 +1,88 @@
 "use strict";
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.updateOne = exports.getOne = exports.getAll = exports.deleteOne = exports.createOne = void 0;
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+var _ExpressError = require("../util/ExpressError");
 
-var createOne = function createOne(Model) {
-  return /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res, next) {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              try {} catch (error) {}
+var _cryptoJs = _interopRequireDefault(require("crypto-js"));
 
-            case 1:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-    return function (_x, _x2, _x3) {
-      return _ref.apply(this, arguments);
-    };
-  }();
+const createOne = Model => async (req, res, next) => {
+  try {
+    const doc = await Model.create(req.body);
+    if (!doc) throw new _ExpressError.BadRequestError();
+    return res.status(201).json(doc);
+  } catch (error) {
+    return next(error);
+  }
 };
+
+exports.createOne = createOne;
+
+const updateOne = Model => async (req, res, next) => {
+  try {
+    if (req.body.password) {
+      req.body.password = _cryptoJs.default.AES.encrypt(req.body.password, process.env.PASS_SEC).toString();
+    }
+
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      runValidators: true,
+      new: true
+    });
+    if (!doc) throw new _ExpressError.BadRequestError();
+    return res.status(201).json(doc);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.updateOne = updateOne;
+
+const getOne = Model => async (req, res, next) => {
+  try {
+    const doc = await Model.findById(req.params.id);
+    if (!doc) throw new _ExpressError.NotFoundError();
+    return res.status(200).json(doc);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.getOne = getOne;
+
+const getAll = Model => async (req, res, next) => {
+  try {
+    const query = req.query.new;
+    const docs = query ? await Model.find().sort({
+      _id: -1
+    }).limit(5) : await Model.find({});
+    return res.status(200).json({
+      status: "success",
+      numResults: docs.length,
+      results: docs
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.getAll = getAll;
+
+const deleteOne = Model => async (req, res, next) => {
+  try {
+    const doc = await Model.findByIdAndDelete(req.params.id);
+    if (!doc) throw new _ExpressError.NotFoundError();
+    return res.status(200).json({
+      status: "success",
+      message: "deleted document"
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.deleteOne = deleteOne;

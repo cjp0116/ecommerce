@@ -7,17 +7,17 @@ exports.SECRET = exports.PORT = exports.MONGODB_URL = exports.DEVELOPMENT_DB = e
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_dotenv["default"].config("../config/dev.env");
+_dotenv.default.config("../config/dev.env");
 
-var SECRET = process.env.JWT_SECRET || "prodKey";
+const SECRET = process.env.JWT_SECRET || "prodKey";
 exports.SECRET = SECRET;
-var PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 exports.PORT = PORT;
-var DEVELOPMENT_DB = process.env.DATABASE_URL || "mongodb://localhost/ecommerce";
+const DEVELOPMENT_DB = process.env.DATABASE_URL || "mongodb://localhost/ecommerce";
 exports.DEVELOPMENT_DB = DEVELOPMENT_DB;
-var MONGODB_URL = process.env.NODE_ENV === "test" ? "mongodb://localhost/ecommerce_test" : DEVELOPMENT_DB;
+const MONGODB_URL = process.env.NODE_ENV === "test" ? "mongodb://localhost/ecommerce_test" : DEVELOPMENT_DB;
 exports.MONGODB_URL = MONGODB_URL;
-var BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
+const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
 exports.BCRYPT_WORK_FACTOR = BCRYPT_WORK_FACTOR;

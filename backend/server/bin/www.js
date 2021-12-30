@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 // import "../db/db.js";
+import '../db/db';
 import app from "../app";
 import debugLib from "debug";
 import http from "http";

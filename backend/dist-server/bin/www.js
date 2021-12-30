@@ -6,6 +6,8 @@
 // import "../db/db.js";
 "use strict";
 
+require("../db/db");
+
 var _app = _interopRequireDefault(require("../app"));
 
 var _debug = _interopRequireDefault(require("debug"));
@@ -14,22 +16,22 @@ var _http = _interopRequireDefault(require("http"));
 
 var _config = require("../config");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var debug = (0, _debug["default"])("backend:server");
+const debug = (0, _debug.default)("backend:server");
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(_config.PORT);
 
-_app["default"].set("port", port);
+_app.default.set("port", port);
 /**
  * Create HTTP server.
  */
 
 
-var server = _http["default"].createServer(_app["default"]);
+var server = _http.default.createServer(_app.default);
 /**
  * Listen on provided port, on all network interfaces.
  */
