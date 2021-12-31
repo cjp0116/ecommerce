@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createToken = void 0;
+exports.createToken = exports.createSendToken = void 0;
 
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
@@ -22,3 +22,20 @@ const createToken = user => {
 };
 
 exports.createToken = createToken;
+
+const createSendToken = (user, statusCode, req, res) => {
+  const token = createToken(user);
+  res.cookie('jwt', token, {
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
+  });
+  user.password = undefined;
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    user
+  });
+};
+
+exports.createSendToken = createSendToken;

@@ -36,5 +36,13 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+router.get('/logout', (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires : new Date(Date.now() + 10 * 1000),
+    httpOnly : true
+  });
+  
+})
+
 export default router;
 

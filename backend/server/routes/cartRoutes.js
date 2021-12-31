@@ -7,13 +7,29 @@ import {
   createOne,
   getAll,
 } from "../util/handlerFactory";
-import { ensureAdminOrCorrectUser, ensureAdmin } from "../middlewares/authMiddlewares";
+import { ensureAdminOrCorrectUser, ensureAdmin, ensureLoggedInAndNotExpired } from "../middlewares/authMiddlewares";
 const router = express.Router();
-
-router.post("/", ensureAdminOrCorrectUser, createOne(Cart));
-router.patch("/:id",ensureAdminOrCorrectUser,  updateOne(Cart));
-router.delete("/:id",ensureAdminOrCorrectUser,  deleteOne(Cart));
-router.get("/:id", ensureAdminOrCorrectUser, getOne(Cart));
+// get all 
 router.get("/", ensureAdmin, getAll(Cart));
+
+router.get("/:id", ensureAdmin, getOne(Cart));
+
+router.post("/", ensureLoggedInAndNotExpired, createOne(Cart));
+
+router.patch("/:id",ensureAdminOrCorrectUser,  updateOne(Cart));
+
+router.delete("/:id",ensureAdminOrCorrectUser, deleteOne(Cart));
+
+// get user cart
+router.get("/find/:userId", ensureAdminOrCorrectUser, async (req, res, next) => {
+  try {
+  const cart = await Cart.findOne({ userId });
+  return res.status(200).json(cart);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+
 
 export default router;
