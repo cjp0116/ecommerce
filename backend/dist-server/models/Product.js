@@ -26,19 +26,23 @@ const productSchema = new _mongoose.default.Schema({
     type: Array
   },
   size: {
-    type: String
+    type: Array
   },
   color: {
-    type: String
+    type: Array
   },
   price: {
     type: Number,
     required: true
+  },
+  inStock: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true
 });
 
-var _default = _mongoose.default.model('Product', productSchema);
+var _default = _mongoose.default.model("Product", productSchema);
 
 exports.default = _default;

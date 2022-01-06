@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
@@ -115,6 +116,8 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+  const location = useLocation();
+  console.log(location.pathname.split('/')[2])
   return (
     <Container>
       <Navbar />
